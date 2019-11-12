@@ -40,7 +40,7 @@ export default class GCSPublisher extends HttpPublisher {
     super(context);
     const config = this.getConfig();
     // this.useSafeName = useSafeArtifactName || true;
-    this.useSafeName = useSafeArtifactName || false;
+    this.useSafeName = false;
     this.storage = new Storage({
       autoRetry: true,
       credentials: config.serviceAccount,
