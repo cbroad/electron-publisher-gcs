@@ -39,7 +39,8 @@ export default class GCSPublisher extends HttpPublisher {
   ) {
     super(context);
     const config = this.getConfig();
-    this.useSafeName = useSafeArtifactName || true;
+    // this.useSafeName = useSafeArtifactName || true;
+    this.useSafeName = useSafeArtifactName || false;
     this.storage = new Storage({
       autoRetry: true,
       credentials: config.serviceAccount,
@@ -64,7 +65,7 @@ export default class GCSPublisher extends HttpPublisher {
       .replace(/\${os}/g, os)
       .replace(/\${arch}/g, archName)
       .replace(/\${filename}/g, fileName);
-    this.context.cancellationToken.createPromise((resolve, reject) => {
+    return this.context.cancellationToken.createPromise((resolve, reject) => {
       const file = this.bucket.file(key).createWriteStream({
         public: config.public,
         resumable: config.resumable
