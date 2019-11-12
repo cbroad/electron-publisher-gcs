@@ -65,14 +65,21 @@ export default class GCSPublisher extends HttpPublisher {
       .replace(/\${os}/g, os)
       .replace(/\${arch}/g, archName)
       .replace(/\${filename}/g, fileName);
+    console.log(`Beginning upload to GCS: "${key}"`);
     return this.context.cancellationToken.createPromise((resolve, reject) => {
       const file = this.bucket.file(key).createWriteStream({
         public: config.public,
         resumable: config.resumable
       });
       createReadStream(filePath).pipe(file);
-      file.on('finish', resolve);
-      file.on('error', reject);
+      file.on('finish', () => {
+        console.log(`Completed upload to GCS: "${key}"`);
+        resolve();
+      } );
+      file.on('error', (err) => {
+        console.log(`Failed upload to GCS: "${key}"`);
+        reject(err);
+      } );
     });
   }
 
